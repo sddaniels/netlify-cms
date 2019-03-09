@@ -258,6 +258,7 @@ export default class Editor extends React.Component {
             onAddAsset={onAddAsset}
             getAsset={getAsset}
             buttons={field.get('buttons')}
+            components={field.get('components')}
           />
         </EditorControlBar>
         <ClassNames>

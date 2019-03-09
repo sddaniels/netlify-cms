@@ -61,6 +61,7 @@ const ToolbarToggleLabel = styled.span`
 export default class Toolbar extends React.Component {
   static propTypes = {
     buttons: ImmutablePropTypes.list,
+    components: ImmutablePropTypes.list,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
     plugins: ImmutablePropTypes.map,
@@ -92,6 +93,7 @@ export default class Toolbar extends React.Component {
       onToggleMode,
       rawMode,
       plugins,
+      components,
       disabled,
       onSubmit,
     } = this.props;
@@ -189,32 +191,35 @@ export default class Toolbar extends React.Component {
             isHidden={this.isHidden('numbered-list')}
             disabled={disabled}
           />
-          <ToolbarDropdownWrapper>
-            <Dropdown
-              dropdownTopOverlap="36px"
-              renderButton={() => (
-                <DropdownButton>
-                  <ToolbarButton
-                    label="Add Component"
-                    icon="add-with"
-                    onClick={this.handleComponentsMenuToggle}
-                    disabled={disabled}
-                  />
-                </DropdownButton>
-              )}
-            >
-              {plugins &&
-                plugins
-                  .toList()
-                  .map((plugin, idx) => (
-                    <DropdownItem
-                      key={idx}
-                      label={plugin.get('label')}
-                      onClick={() => onSubmit(plugin.get('id'))}
+          {(!components || components.length > 0) && (
+            <ToolbarDropdownWrapper>
+              <Dropdown
+                dropdownTopOverlap="36px"
+                renderButton={() => (
+                  <DropdownButton>
+                    <ToolbarButton
+                      label="Add Component"
+                      icon="add-with"
+                      onClick={this.handleComponentsMenuToggle}
+                      disabled={disabled}
                     />
-                  ))}
-            </Dropdown>
-          </ToolbarDropdownWrapper>
+                  </DropdownButton>
+                )}
+              >
+                {plugins &&
+                  plugins
+                    .toList()
+                    .filter(value => !components || components.contains(value))
+                    .map((plugin, idx) => (
+                      <DropdownItem
+                        key={idx}
+                        label={plugin.get('label')}
+                        onClick={() => onSubmit(plugin.get('id'))}
+                      />
+                    ))}
+              </Dropdown>
+            </ToolbarDropdownWrapper>
+          )}
         </div>
         <ToolbarToggle>
           <ToolbarToggleLabel isActive={!rawMode} offPosition>
